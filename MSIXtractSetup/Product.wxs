@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product 
+    Id="{E8586066-1A6F-4E66-B294-A0A95426289A}" 
+    Name="MSIXtract"
+    Language="1033" 
+    Version="1.0.0.0" 
+    Manufacturer="Sullarc" 
+    UpgradeCode="{6C3E090D-11D7-43D3-B20C-274A31525976}">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate EmbedCab="yes" />
+    
+    <WixVariable Id="WixUILicenseRtf" Value="bobpl.rtf" />
+    <WixVariable Id="WixUIBannerBmp" Value="Content\Images\banner.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="Content\Images\dialog.bmp" />
+    <Icon Id="icon.ico" SourceFile="Content\Icons\msi-extract.logo.fw.ico"/>
+    <Property Id="ARPPRODUCTICON" Value="icon.ico" />
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+    
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="MSIXtractSetup">
+          <Component Id="cmpMSIXtractApplication" Guid="{57D84956-CF00-4B4C-A097-0774FBF86C6E}" KeyPath="yes">
+            <File Id="MSIXtractApplicationEXE" Source="$(var.MSIXtractApplication.TargetDir)MSIXtractApplication.exe"></File>
+            <!--http://mostlytech.blogspot.co.il/2007/02/extend-right-click-menu-in-explorer-in.html-->
+            <RegistryKey ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" Root="HKCR" Key="Msi.Package\Shell\Extract">
+              <RegistryValue Action="write" Value="Extract" Type="string" />
+              <RegistryKey ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" Key="command">
+                <RegistryValue Action="write" Type="string" Value="&quot;[#MSIXtractApplicationEXE]&quot; &quot;%1&quot;"/>
+              </RegistryKey>
+            </RegistryKey>
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+
+		<Feature Id="ProductFeature" Title="MSIXtractSetup" Level="1">
+			<ComponentRef Id="cmpMSIXtractApplication" />
+		</Feature>
+
+    <UIRef Id="CustomUI_InstallDir"/>
+	</Product>
+</Wix>
